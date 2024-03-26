@@ -1,12 +1,10 @@
-use ratatui::{widgets::{Block, Borders, Paragraph}, Frame};
+use ratatui::{layout::Rect, widgets::{Block, Borders}, Frame};
 
-pub fn render(frame: &mut Frame) {
-    frame.render_widget(
-        Paragraph::new(String::from("YO"))
-        .block(Block::default()
-            .title(String::from("YO!!"))
-            .borders(Borders::ALL)
-        ),
-        frame.size(),
-    );
+use crate::config::StatusBarConfig;
+
+pub fn render(frame: &mut Frame, area: Rect, config: &StatusBarConfig) {
+    let header = Block::new()
+        .borders(Borders::BOTTOM);
+
+    frame.render_widget(header, area);
 }

@@ -1,8 +1,8 @@
-use ratatui::{widgets::{Block, Borders, Paragraph}, Frame};
+use ratatui::{layout::Rect, widgets::{Block, Borders, Paragraph}, Frame};
 
-use crate::defs::View;
+use crate::{config::Config, defs::View};
 
-pub fn render(view: View, frame: &mut Frame) {
+pub fn render(view: View, frame: &mut Frame, area: Rect, config: &Config) {
     match view.value {
         Some(value) => {
             if value.len() != 2 { return; }
@@ -13,7 +13,7 @@ pub fn render(view: View, frame: &mut Frame) {
                     .title(value[0].to_owned())
                     .borders(Borders::ALL)
                 ),
-                frame.size(),
+                area,
             );
         },
         None => {

@@ -1,5 +1,5 @@
-use ratatui::Frame;
-use crate::views;
+use ratatui::{layout::Rect, Frame};
+use crate::{config::Config, views};
 
 #[derive(Clone)]
 pub enum ViewType {
@@ -29,10 +29,10 @@ impl View {
         }
     }
 
-    pub fn render(self, frame: &mut Frame) {
+    pub fn render(self, frame: &mut Frame, area: Rect, config: &Config) {
         match self.view_type {
             ViewType::Intro => {
-                views::intro::render(self, frame);
+                views::intro::render(self, frame, area, config);
             }
             // ViewType::TitleBar => {
             //     println!("TitleBar view");
