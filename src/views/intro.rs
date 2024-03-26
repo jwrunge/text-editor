@@ -5,7 +5,7 @@ use crate::defs::View;
 pub fn render(view: View, frame: &mut Frame) {
     match view.value {
         Some(value) => {
-            if(value.len() != 2) { return; }
+            if value.len() != 2 { return; }
 
             frame.render_widget(
                 Paragraph::new(value[1].to_owned())

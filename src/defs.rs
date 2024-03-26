@@ -1,58 +1,60 @@
 use ratatui::Frame;
 use crate::views;
 
+#[derive(Clone)]
 pub enum ViewType {
     Intro,
-    TitleBar,
-    StatusBar,
-    Main,
-    Terminal,
-    Explorer,
-    Search,
-    Popup,
+    // TitleBar,
+    // StatusBar,
+    // Main,
+    // Terminal,
+    // Explorer,
+    // Search,
+    // Popup,
 }
 
+#[derive(Clone)]
 pub struct View {
-    pub viewType: ViewType,
+    pub view_type: ViewType,
     pub value: Option<Vec<String>>,
     pub visible: bool,
 }
 
 impl View {
-    pub fn new(viewType: ViewType, value: Option<Vec<String>>, visible: bool) -> Self {
+    pub fn new(view_type: ViewType, value: Option<Vec<String>>, visible: bool) -> Self {
         View {
-            viewType,
+            view_type,
             value,
             visible,
         }
     }
 
     pub fn render(self, frame: &mut Frame) {
-        match self.viewType {
+        match self.view_type {
             ViewType::Intro => {
                 views::intro::render(self, frame);
             }
-            ViewType::TitleBar => {
-                println!("TitleBar view");
-            }
-            ViewType::StatusBar => {
-                println!("StatusBar view");
-            }
-            ViewType::Main => {
-                println!("Main view");
-            }
-            ViewType::Terminal => {
-                println!("Terminal view");
-            }
-            ViewType::Explorer => {
-                println!("Explorer view");
-            }
-            ViewType::Search => {
-                println!("Search view");
-            }
-            ViewType::Popup => {
-                println!("Popup view");
-            }
+            // ViewType::TitleBar => {
+            //     println!("TitleBar view");
+            // }
+            // ViewType::StatusBar => {
+            //     println!("StatusBar view");
+            // }
+            // ViewType::Main => {
+            //     println!("Main view");
+            // }
+            // ViewType::Terminal => {
+            //     println!("Terminal view");
+            // }
+            // ViewType::Explorer => {
+            //     println!("Explorer view");
+            // }
+            // ViewType::Search => {
+            //     println!("Search view");
+            // }
+            // ViewType::Popup => {
+            //     println!("Popup view");
+            // }
         }
     }
 }
