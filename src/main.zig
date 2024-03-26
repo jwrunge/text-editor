@@ -3,7 +3,7 @@ const mem = std.mem;
 const heap = std.heap;
 const os = std.os;
 const meta = std.meta;
-const spoon = @import("../lib/zig-spoon/import.zig");
+const spoon = @import("lib/zig-spoon/import.zig");
 
 var term: spoon.Term = undefined;
 var loop: bool = true;
