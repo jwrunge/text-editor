@@ -4,7 +4,6 @@ use crossterm::{
     terminal::{disable_raw_mode, enable_raw_mode, EnterAlternateScreen, LeaveAlternateScreen},
     ExecutableCommand,
 };
-use ratatui_splash_screen::{SplashConfig, SplashScreen};
 use state::{AppState, PopupState};
 use ratatui::prelude::*;
 
@@ -22,39 +21,16 @@ const _APP_NAME: &str = "mylodon";
 const _APP_VERSION: &str = "0.0.1";
 const CFG: Config = config::get_config();
 
-//Splash
-static SPLASH_CONFIG: SplashConfig = SplashConfig {
-    image_data: include_bytes!("./assets/alt.png"),
-    sha256sum: None,
-    render_steps: 12,
-    use_colors: true
-};
-
 fn main()-> io::Result<()> {
     //App setup
     enable_raw_mode()?;
     let mut terminal = Terminal::new(CrosstermBackend::new(stdout()))?;
+    stdout().execute(EnterAlternateScreen)?;
 
     //App state
     let mut app_state = AppState::Greeting;
     let mut popup_state = PopupState::None;
     let mut buffers: std::collections::HashMap<String, Vec<String>> = std::collections::HashMap::new();
-    let mut splash: SplashScreen = match SplashScreen::new(SPLASH_CONFIG) {
-        Ok(s) => s,
-        Err(e) => {
-            panic!("Error: {}", e);
-        }
-    };
-
-    //Main window structure
-    let mut constraints = vec![];
-    if CFG.header_bar.enabled {
-        constraints.push(Constraint::Length(1));
-    }
-    constraints.push(Constraint::Min(0));
-    if CFG.status_bar.enabled {
-        constraints.push(Constraint::Length(1));
-    }
 
     terminal.clear()?;
     let mut should_quit = false;
@@ -62,26 +38,10 @@ fn main()-> io::Result<()> {
     //Main loop
     while !should_quit {
         should_quit = handle_events(&mut app_state, &mut buffers)?;
-
-        if splash.is_rendered() {
-            terminal.draw(ui(&app_state, &popup_state))?;
-        }
-        else {
-            terminal.draw(|frame| {
-                frame.render_widget(&mut splash, frame.size());
-            })?;
-            std::thread::sleep(Duration::from_millis(100));
-
-            if splash.is_rendered() {
-                std::thread::sleep(Duration::from_secs(1));
-                terminal.clear()?;
-                stdout().execute(EnterAlternateScreen)?;
-            }
-        }
+        terminal.draw(ui(&app_state, &popup_state))?;
     }
 
     //Exit app
-    terminal.clear()?;
     disable_raw_mode()?;
     stdout().execute(LeaveAlternateScreen)?;
     Ok(())
@@ -111,9 +71,7 @@ fn ui(state: &AppState, popup: &PopupState)-> impl Fn(&mut Frame) {
         ).split(frame.size());
         
         //Header
-        if CFG.header_bar.enabled {
-            views::header::render(frame, main_layout[0], &CFG.header_bar, _APP_NAME, _APP_VERSION);
-        }
+        views::header::render(frame, main_layout[0], &CFG.header_bar, _APP_NAME, _APP_VERSION);
 
         //Body
         // let body_layout = Layout::new(

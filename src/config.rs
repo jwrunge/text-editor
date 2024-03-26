@@ -1,5 +1,11 @@
 use ratatui::layout::Alignment;
 
+pub enum ConditionallyEnabled {
+    Enabled,
+    Disabled,
+    HeightBased,
+}
+
 pub struct Config {
     pub status_bar: StatusBarConfig,
     pub header_bar: HeaderBarConfig,
@@ -10,7 +16,8 @@ pub struct StatusBarConfig {
 }
 
 pub struct HeaderBarConfig {
-    pub enabled: bool,
+    pub enabled: ConditionallyEnabled,
+    pub height_cutoff: u16,
     pub show_title: bool,
     pub show_version: bool,
     pub custom_header_text: Option<&'static str>,
@@ -29,7 +36,8 @@ pub const fn default_config() -> Config {
             enabled: true
         },
         header_bar: HeaderBarConfig {
-            enabled: true,
+            enabled: ConditionallyEnabled::HeightBased,
+            height_cutoff: 20,
             show_title: true,
             title_alignment: Alignment::Right,
             show_version: true,

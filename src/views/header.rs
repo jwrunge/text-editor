@@ -1,15 +1,25 @@
-use ratatui::{layout::Rect, widgets::{block::Title, Block, Borders}, Frame};
+use ratatui::{layout::Rect, style::{Color, Style, Stylize}, widgets::{block::Title, Block, Borders}, Frame};
 
 use crate::config::HeaderBarConfig;
 
 pub fn render(frame: &mut Frame, area: Rect, config: &HeaderBarConfig, name: &str, version: &str) {
-    if config.enabled == false {
-        return;
+    match config.enabled {
+        crate::config::ConditionallyEnabled::Disabled => return,
+        crate::config::ConditionallyEnabled::HeightBased => {
+            if frame.size().height < config.height_cutoff {
+                return;
+            }
+        }
+        crate::config::ConditionallyEnabled::Enabled => {}
     }
-    
-    let header = Block::new()
-        .borders(Borders::TOP);
 
+    let header = Block::new()
+        .style(
+            Style::new()
+                .bg(Color::DarkGray)
+                .fg(Color::Black)
+                .bold()
+        );
     let header = match config.show_title {
         true => header.title(Title::from(format!("{}", name)).alignment(config.title_alignment)),
         false => header,
