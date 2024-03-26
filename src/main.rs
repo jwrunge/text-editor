@@ -4,12 +4,12 @@ use crossterm::{
     terminal::{disable_raw_mode, enable_raw_mode, EnterAlternateScreen, LeaveAlternateScreen},
     ExecutableCommand,
 };
+use defs::{View, ViewType};
 use ratatui::prelude::*;
 
 mod views {
     pub mod intro;
 }
-
 mod defs;
 
 fn main()-> io::Result<()> {
@@ -45,11 +45,8 @@ fn handle_events()-> io::Result<bool> {
 }
 
 fn ui(frame: &mut Frame) {
-
-    // frame.render_widget(
-    //     views::intro::render(),
-    //     frame.size(),
-    // );
+    views::intro::render(View::new(ViewType::Intro, Some(vec![String::from("Hello box"), String::from("Hello!!!")]), true), frame);
+    
     // let main_layout = Layout::new(
     //     Direction::Vertical,
     //     vec![

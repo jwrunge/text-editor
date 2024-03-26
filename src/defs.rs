@@ -1,5 +1,4 @@
 use ratatui::Frame;
-
 use crate::views;
 
 pub enum ViewType {
@@ -15,12 +14,12 @@ pub enum ViewType {
 
 pub struct View {
     pub viewType: ViewType,
-    pub value: Option<String>,
+    pub value: Option<Vec<String>>,
     pub visible: bool,
 }
 
 impl View {
-    pub fn new(viewType: ViewType, value: Option<String>, visible: bool) -> Self {
+    pub fn new(viewType: ViewType, value: Option<Vec<String>>, visible: bool) -> Self {
         View {
             viewType,
             value,
