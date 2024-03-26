@@ -1,7 +1,6 @@
 use ratatui::{layout::Rect, Frame};
 use crate::{config::Config, views};
 
-#[derive(Clone)]
 pub enum ViewType {
     Intro,
     // TitleBar,
@@ -13,7 +12,6 @@ pub enum ViewType {
     // Popup,
 }
 
-#[derive(Clone)]
 pub struct View {
     pub view_type: ViewType,
     pub value: Option<Vec<String>>,
