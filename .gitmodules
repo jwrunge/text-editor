@@ -1,1 +1,4 @@
 
+[submodule "lib/zig-spoon"]
+	path = lib/zig-spoon
+	url = https://git.sr.ht/~leon_plickat/zig-spoon
