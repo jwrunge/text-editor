@@ -5,7 +5,7 @@ use crossterm::{
     ExecutableCommand,
 };
 use state::{AppState, PopupState};
-use ratatui::prelude::*;
+use ratatui::{prelude::*, widgets::{Block, Borders}};
 
 use crate::config::Config;
 
@@ -61,32 +61,41 @@ fn handle_events(app_state: &mut AppState, buffers: &mut std::collections::HashM
 
 fn ui(state: &AppState, popup: &PopupState)-> impl Fn(&mut Frame) {
     |frame: &mut Frame| {    
-        let main_layout = Layout::new(
-            Direction::Vertical,
-            [
-                Constraint::Length(1),
-                Constraint::Min(0),
-                Constraint::Length(1),
-            ]
-        ).split(frame.size());
-        
-        //Header
-        views::header::render(frame, main_layout[0], &CFG.header_bar, _APP_NAME, _APP_VERSION);
+        let mut constraints = vec![
+            Constraint::Fill(1),
+            Constraint::Length(1),
+        ];
+        let mut body_idx = 0;
+
+        if matches!(CFG.header_bar.enabled, config::ConditionallyEnabled::Enabled) || (matches!(CFG.header_bar.enabled, config::ConditionallyEnabled::HeightBased) && frame.size().height >= CFG.header_bar.height_cutoff) {
+            constraints.insert(0, Constraint::Length(1));
+            body_idx = 1;
+        }
+
+        let main_layout = Layout::new( Direction::Vertical, constraints).split(frame.size());
 
         //Body
-        // let body_layout = Layout::new(
-        //     Direction::Horizontal,
-        //     [
-        //         Constraint::Min(0),
-        //     ]
-        // ).split(main_layout[1]);
+        let body_layout = Layout::new(
+            Direction::Horizontal,
+            [
+                Constraint::Min(0),
+            ]
+        ).split(main_layout[body_idx]);
 
-        // //Main body
-        // match state {
-        //     AppState::Greeting => {
-                
-        //     }
-        // }
+        //Main body
+        match state {
+            AppState::Greeting => {
+                //Header
+                views::header::render(frame, main_layout[0], &CFG.header_bar, _APP_NAME, _APP_VERSION);
+
+                //Body
+                let body = Block::default()
+                    .title("Welcome to mylodon")
+                    .borders(Borders::ALL);
+
+                frame.render_widget(body, body_layout[0]);
+            }
+        }
 
         //Popups
         match popup {
@@ -95,7 +104,7 @@ fn ui(state: &AppState, popup: &PopupState)-> impl Fn(&mut Frame) {
 
         //Status bar
         if CFG.status_bar.enabled {
-            views::status_bar::render(frame, main_layout[2], &CFG.status_bar);
+            views::status_bar::render(frame, main_layout[body_idx + 1], &CFG.status_bar);
         }
     }
 }

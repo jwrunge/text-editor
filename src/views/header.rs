@@ -1,4 +1,4 @@
-use ratatui::{layout::Rect, style::{Color, Style, Stylize}, widgets::{block::Title, Block, Borders}, Frame};
+use ratatui::{layout::Rect, style::{Color, Style, Stylize}, widgets::{block::Title, Block}, Frame};
 
 use crate::config::HeaderBarConfig;
 
