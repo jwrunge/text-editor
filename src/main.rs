@@ -7,19 +7,20 @@ use crossterm::{
 use state::{AppState, PopupState};
 use ratatui::{prelude::*, widgets::{Block, Borders}};
 
-use crate::config::Config;
-
 mod views {
     pub mod header;
     pub mod status_bar;
 }
 mod state;
 mod config;
+mod frivolity {
+    pub mod art;
+}
 
 //App const and static
 const _APP_NAME: &str = "mylodon";
 const _APP_VERSION: &str = "0.0.1";
-const CFG: Config = config::get_config();
+const CFG: config::Config = config::get_config();
 
 fn main()-> io::Result<()> {
     //App setup
@@ -74,24 +75,30 @@ fn ui(state: &AppState, popup: &PopupState)-> impl Fn(&mut Frame) {
 
         let main_layout = Layout::new( Direction::Vertical, constraints).split(frame.size());
 
-        //Body
-        let body_layout = Layout::new(
-            Direction::Horizontal,
-            [
-                Constraint::Min(0),
-            ]
-        ).split(main_layout[body_idx]);
-
         //Main body
         match state {
             AppState::Greeting => {
                 //Header
                 views::header::render(frame, main_layout[0], &CFG.header_bar, _APP_NAME, _APP_VERSION);
 
+                let art = frivolity::art::get_art();
+
+                //Body
+                let body_layout = Layout::new(
+                    Direction::Horizontal,
+                    art.lines().map(|_| Constraint::Length(1)),
+                ).split(main_layout[body_idx]);
+
                 //Body
                 let body = Block::default()
-                    .title("Welcome to mylodon")
-                    .borders(Borders::ALL);
+                    .title("Welcome to mylodon");
+
+                //Print text to screen
+                let art_lines = art.lines();
+                for (i, line) in art_lines.enumerate() {
+                    let text = Text::styled(line, Style::default().fg(Color::Rgb(255, 255, 255)));
+                    frame.render_widget(text, body_layout[i]);
+                }
 
                 frame.render_widget(body, body_layout[0]);
             }
