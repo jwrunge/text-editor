@@ -2,7 +2,9 @@
 
 Notes on Mylodon interfaces, default keybindings
 
-## Nav mode
+## Editor features
+
+### Nav mode
 
 Main nav keys (j/k/d/f/h/l/w/W/e/E/{/}) can be combined with a number (e.g. 5 {) to move 5 {'s into the file.
 Other keys could be set to find custom strings.
@@ -17,7 +19,7 @@ Other keys could be set to find custom strings.
 | e                             | next end word                 | prev end word             | x5                    | last end word in line |
 | {sym}                         | next symbol                   | prev symbol               | x5                    | last symbol in line   |
 | SPACE / leader                | open leader menu              | Quick 1: Save             | Quick 2: Save all     | Quick 3: Open         |
-| g                             | GET MODE (selected or type)   | GET MODE (replace)        |                       |                       |
+| g                             | GET MODE (selected or type)   | GET MODE (reverse)        | GET MODE (replace)    |                       |
 | Enter                         | EDIT MODE (insert)            | EDIT MODE (append)        | EDIT MODE (prepend)   | EDIT MODE (next line) |
 |                               |                               | double-tap - append eol   | double - prepend line |                       |
 | s                             | SELECT (highlight) MODE       | SELECT MODE (to eol)      | SELECT MODE (contents)| Select line           |
@@ -25,7 +27,7 @@ Other keys could be set to find custom strings.
 | Ctrl-c, -v, -a, -x, del, bsp  | Common use                    |                           |                       |                       |
 | ESC                           | Clear sel, search mode NAV    |                           |                       |                       |
 
-## GET MODE
+### GET MODE
 
 If highlighting, Get Mode is initialized to find highlighted word. Can also initialize into find/replace mode.
 
@@ -37,12 +39,28 @@ In standard mode: r replaces word and enters edit mode. In replace mode: r repla
 
 Space enters Get Mode commands: replace all, multi-file, next file, match case, regex, etc.
 
-## SELECT MODE
+### SELECT MODE
 
 Movement keys and Get Mode work as they have (with limited functionality scoped to just selecting text). s exits Select Mode.
 
-## Editing Mode
+### Editing Mode
 
 Can jump in at cursor pos, after word (append), before word (prepend), next line, end of line (append), beginning of line (prepend)
 
 SHIFT + ENTER returns to NAV mode
+
+## Additional features
+
+Additional features of the editor:
+
+* syntax highlighting and custom coloring/themes
+* lsp support
+* extension support
+* lua config and extension support
+* plugin manager
+* directory grep (filename or contents)
+* file grep and directory tree
+* git integration (via extension?)
+* db viewer (via extension?)
+* run/launch/debug profiles (via extension?)
+* GUI renderer in addition to TUI? (can set "prefersGUI" in options to launch the GUI by default?)
