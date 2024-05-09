@@ -16,12 +16,15 @@ use ratatui::{
 };
 
 mod app;
+mod config;
 mod ui;
 mod input;
-use crate::{
-    app::{App, CurrentScreen, CurrentlyEditing},
-    ui::ui,
-};
+use crate::app::{App, CurrentScreen, CurrentlyEditing};
+
+//App const and static
+const _APP_NAME: &str = "mylodon";
+const _APP_VERSION: &str = "0.0.1";
+const CFG: config::Config = config::get_config();
 
 fn main() -> Result<(), Box<dyn Error>> {
     // setup terminal
@@ -60,7 +63,7 @@ fn run_app<B: Backend>(
     app: &mut App,
 ) -> io::Result<bool> {
     loop {
-        terminal.draw(|f| ui(f, app))?;
+        terminal.draw(|f| ui::render(f, app))?;
 
         if let Event::Key(key) = event::read()? {
             if key.kind == event::KeyEventKind::Release {

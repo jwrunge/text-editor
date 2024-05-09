@@ -5,31 +5,13 @@ use ratatui::{
     widgets::{Block, Borders, Clear, List, ListItem, Paragraph, Wrap},
     Frame,
 };
-
 use crate::app::{App, CurrentScreen, CurrentlyEditing};
 
-pub fn ui(f: &mut Frame, app: &App) {
-    // Create the layout sections.
-    let chunks = Layout::default()
-        .direction(Direction::Vertical)
-        .constraints([
-            Constraint::Length(3),
-            Constraint::Min(1),
-            Constraint::Length(3),
-        ])
-        .split(f.size());
+mod main_layout;
+mod views;
 
-    let title_block = Block::default()
-        .borders(Borders::ALL)
-        .style(Style::default());
-
-    let title = Paragraph::new(Text::styled(
-        "Create New Json",
-        Style::default().fg(Color::Green),
-    ))
-    .block(title_block);
-
-    f.render_widget(title, chunks[0]);
+pub fn render(f: &mut Frame, app: &App) {
+    let (main_layout, body_idx) = main_layout::render(f);
     let mut list_items = Vec::<ListItem>::new();
 
     for key in app.pairs.keys() {
@@ -41,7 +23,7 @@ pub fn ui(f: &mut Frame, app: &App) {
 
     let list = List::new(list_items);
 
-    f.render_widget(list, chunks[1]);
+    f.render_widget(list, main_layout[1]);
     let current_navigation_text = vec![
         // The first half of the text
         match app.current_screen {
@@ -106,7 +88,7 @@ pub fn ui(f: &mut Frame, app: &App) {
     let footer_chunks = Layout::default()
         .direction(Direction::Horizontal)
         .constraints([Constraint::Percentage(50), Constraint::Percentage(50)])
-        .split(chunks[2]);
+        .split(main_layout[2]);
 
     f.render_widget(mode_footer, footer_chunks[0]);
     f.render_widget(key_notes_footer, footer_chunks[1]);
