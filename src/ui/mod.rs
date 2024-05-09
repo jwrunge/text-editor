@@ -5,13 +5,16 @@ use ratatui::{
     widgets::{Block, Borders, Clear, List, ListItem, Paragraph, Wrap},
     Frame,
 };
-use crate::app::{App, CurrentScreen, CurrentlyEditing};
+use crate::{app::{App, CurrentScreen, CurrentlyEditing}, CFG, _APP_NAME, _APP_VERSION};
 
 mod main_layout;
 mod views;
 
 pub fn render(f: &mut Frame, app: &App) {
-    let (main_layout, body_idx) = main_layout::render(f);
+    //Set up layout and render header
+    let (main_layout, mut render_idx) = main_layout::assemble(f);
+    views::header::render(f, *main_layout.get(0).expect("Error rendering app header."), &CFG.header_bar, _APP_NAME, _APP_VERSION);
+
     let mut list_items = Vec::<ListItem>::new();
 
     for key in app.pairs.keys() {
@@ -23,10 +26,15 @@ pub fn render(f: &mut Frame, app: &App) {
 
     let list = List::new(list_items);
 
-    f.render_widget(list, main_layout[1]);
+    f.render_widget(list, *main_layout.get(render_idx).expect("Error rendering app list: layout doesn't have enough slots."));
+    render_idx += 1;
+
     let current_navigation_text = vec![
         // The first half of the text
         match app.current_screen {
+            CurrentScreen::Greeting => {
+                Span::styled("Normal Mode", Style::default().fg(Color::Green))
+            }
             CurrentScreen::Main => {
                 Span::styled("Normal Mode", Style::default().fg(Color::Green))
             }
@@ -62,37 +70,10 @@ pub fn render(f: &mut Frame, app: &App) {
         },
     ];
 
-    let mode_footer = Paragraph::new(Line::from(current_navigation_text))
-        .block(Block::default().borders(Borders::ALL));
+    // Render status bar
+    views::status_bar::render(f, *main_layout.get(render_idx).expect("Error rendering app status bar: layout doesn't have enough slots."), &CFG.status_bar);
 
-    let current_keys_hint = {
-        match app.current_screen {
-            CurrentScreen::Main => Span::styled(
-                "(q) to quit / (e) to make new pair",
-                Style::default().fg(Color::Red),
-            ),
-            CurrentScreen::Editing => Span::styled(
-                "(ESC) to cancel/(Tab) to switch boxes/enter to complete",
-                Style::default().fg(Color::Red),
-            ),
-            CurrentScreen::Exiting => Span::styled(
-                "(q) to quit / (e) to make new pair",
-                Style::default().fg(Color::Red),
-            ),
-        }
-    };
-
-    let key_notes_footer = Paragraph::new(Line::from(current_keys_hint))
-        .block(Block::default().borders(Borders::ALL));
-
-    let footer_chunks = Layout::default()
-        .direction(Direction::Horizontal)
-        .constraints([Constraint::Percentage(50), Constraint::Percentage(50)])
-        .split(main_layout[2]);
-
-    f.render_widget(mode_footer, footer_chunks[0]);
-    f.render_widget(key_notes_footer, footer_chunks[1]);
-
+    // Render popup layer
     if let Some(editing) = &app.currently_editing {
         let popup_block = Block::default()
             .title("Enter a new key-value pair")

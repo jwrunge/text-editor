@@ -1,6 +1,7 @@
 use std::collections::HashMap;
 
 pub enum CurrentScreen {
+    Greeting,
     Main,
     Editing,
     Exiting,
@@ -31,7 +32,7 @@ impl App {
             key_input: String::new(),
             value_input: String::new(),
             pairs: HashMap::new(),
-            current_screen: CurrentScreen::Main,
+            current_screen: CurrentScreen::Greeting,
             currently_editing: None,
         }
     }
